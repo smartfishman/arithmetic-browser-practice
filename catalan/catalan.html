@@ -1,14 +1,96 @@
-����Ŀ�Ƕ�catalan����һЩ�����о���
+﻿该项目是对catalan数的一些性质研究。
 <script data-main="js/main" src="js/require.js"></script>
 <div id="C_div">
-  <label>�����C(n,m)��ֵ��</label>
-  <input type="text" class="Cnm_input" id="C_n" placeholder="����n��ֵ" />
-  <input type="text" class="Cnm_input" id="C_m" placeholder="����m��ֵ" />
-  <input type="text" id="C_sum" placeholder="���ｫ��ʾC(n,m)��ֵ" disabled/>
+  <label>组合数C(n,m)求值：</label>
+  <input type="text" class="Cnm_input" id="C_n" placeholder="输入n的值" />
+  <input type="text" class="Cnm_input" id="C_m" placeholder="输入m的值" />
+  <input type="text" id="C_sum" placeholder="这里将显示C(n,m)的值" disabled/>
 </div>
 <div id="A_div">
-  <label>������A(n,m)��ֵ��</label>
-  <input type="text" class="Anm_input" id="A_n" placeholder="����n��ֵ" />
-  <input type="text" class="Anm_input" id="A_m" placeholder="����m��ֵ" />
-  <input type="text" id="A_sum" placeholder="���ｫ��ʾA(n,m)��ֵ" disabled />
+  <label>排列数A(n,m)求值：</label>
+  <input type="text" class="Anm_input" id="A_n" placeholder="输入n的值" />
+  <input type="text" class="Anm_input" id="A_m" placeholder="输入m的值" />
+  <input type="text" id="A_sum" placeholder="这里将显示A(n,m)的值" disabled />
 </div>
+<div id="h_div">
+  <label>catalan数h(n)求值：</label>
+  <input type="text" class="hn_input" id="h_n" placeholder="输入n的值" />
+  <input type="text" id="h_sum" placeholder="这里将显示h(n)的值" disabled />
+</div>
+<div id="h_practice_div">
+  <label>经典出入栈问题，当有n位游客拿着5元，m位游客拿着10元，来买5元票，售票员没有零钱，问有多少种排队方案：</label><br/>
+  <label>如题转化为n个数排队进栈，m个数出栈，求方案种类数。公式为：h(m)*m!*m!*A(n,n-m)</label><br/>
+  <input type="text" class="hnm_practice_input" id="h_practice_n" placeholder="输入n的值" />
+  <input type="text" class="hnm_practice_input" id="h_practice_m" placeholder="输入m的值" />
+  <input type="text" id="h_practice_sum" placeholder="这里将显示值" disabled />
+</div>
+<script>
+  //以下是关于类的继承的实现，ES6中通过class extends等新的关键词也可以简洁的实现继承，但ES6不支持静态属性，只支持静态方法。
+  //父类 Person 
+  //TODO prototype属性若写在函数体内，似乎会在new 对象时被再次执行一次。保险起见还是应将prototype属性写在函数体外。
+  //t(n) = t(0)*t(n-1)+...+t(n-1)*t(0)
+  function Person() {    
+    this.sayName = function () {
+      return this.name;
+    }    
+  }
+  Person.prototype.originalname = "person"
+  Person.prototype.printName = function () {
+    console.log(this.originalname)
+  }
+  Person.prototype.setOriginalname = function (name) {
+    Person.prototype.originalname = name
+  }
+
+  //子类 Chinese
+  function Chinese(name) {
+    //借助 call 实现继承实例
+    Person.call(this);
+    
+    this.name = name
+    this.ch = function () {
+      alert('我是中国人');
+    }
+  }
+  //继承原型属性及方法
+  Chinese.prototype = Object.create(Person.prototype)
+  Chinese.prototype.constructor = Chinese
+ 
+
+  //子类 America
+  function America(name) {
+    //借助 call 实现继承实例
+    Person.call(this);
+
+    this.name = name;
+    this.am = function () {
+      alert('我是美国人');
+    }
+  }
+  //继承原型属性及方法
+  America.prototype = Object.create(Person.prototype)
+  America.prototype.constructor = America
+
+  var person = new Person()
+
+  var chinese = new Chinese("成龙");
+ 
+  //console.log(chinese.sayName());   //输出 成龙
+  //chinese.printName();
+  //chinese.setOriginalname("chinese person")
+  //chinese.printName(); 
+
+  //var chineseNew = new Chinese("李连杰")
+  //chineseNew.printName();
+  //chinese.printName();
+  //chinese.setOriginalname("chineseNew person")
+  //chineseNew.printName();
+  //console.log(chinese)
+  //console.log(chineseNew)
+
+  //var america = new America("Tom")
+  //console.log(america.sayName())
+  //america.printName()
+  //america.setOriginalname("america person")
+  //america.printName()
+</script>

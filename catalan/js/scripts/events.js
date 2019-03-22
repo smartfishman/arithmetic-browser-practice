@@ -1,38 +1,54 @@
-/*
-×÷Õß£ºÀîÇàÉ½
-ÈÕÆÚ£º2019Äê3ÔÂ21ÈÕ
-¹¦ÄÜ¸ÅÊö£º°ó¶¨ÊÂ¼ş
+ï»¿/*
+ä½œè€…ï¼šæé’å±±
+æ—¥æœŸï¼š2019å¹´3æœˆ21æ—¥
+åŠŸèƒ½æ¦‚è¿°ï¼šç»‘å®šäº‹ä»¶
 */
+"use strict"
 ;(function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define(["public_lib/jquery_min","MathExt"], factory)
+    define(["public_lib/jquery_min", "MathExt", "public_lib/Calculator.min"], factory)
   } else if (typeof exports === 'object') {
     module.exports = factory()
   } else {
     root.returnExports = factory()
   }
-})(this, function ($, MathExt) {
+})(this, function ($, MathExt, Calculator) {
   $(document).ready(function () {
-    //°ó¶¨×éºÏÊıÊäÈë¿òÄÚÖµ±ä»¯ÊÂ¼ş£¬µ±n,m±ä»¯Ê±¸üĞÂC(n,m)µÄÊä³öÖµ
+    var calculator = new Calculator()
+    //ç»‘å®šç»„åˆæ•°è¾“å…¥æ¡†å†…å€¼å˜åŒ–äº‹ä»¶ï¼Œå½“n,må˜åŒ–æ—¶æ›´æ–°C(n,m)çš„è¾“å‡ºå€¼
     $(".Cnm_input").on("input propertychange",function () {
       countCnm()
     })
-    //¼ÆËãC(n,m)
+    //è®¡ç®—C(n,m)
     function countCnm() {
       var n = parseInt($("#C_n")[0].value)
       var m = parseInt($("#C_m")[0].value)
       $("#C_sum")[0].value = MathExt.combinatorial(n, m)
     }
-    //°ó¶¨ÅÅÁĞÊıÊäÈë¿òÄÚÖµ±ä»¯ÊÂ¼ş£¬µ±n,m±ä»¯Ê±¸üĞÂA(n,m)µÄÊä³öÖµ
+    //ç»‘å®šæ’åˆ—æ•°è¾“å…¥æ¡†å†…å€¼å˜åŒ–äº‹ä»¶ï¼Œå½“n,må˜åŒ–æ—¶æ›´æ–°A(n,m)çš„è¾“å‡ºå€¼
     $(".Anm_input").on("input propertychange", function () {
       countAnm()
     })
-    //¼ÆËãA(n,m)
+    //è®¡ç®—A(n,m)
     function countAnm() {
       var n = parseInt($("#A_n")[0].value)
       var m = parseInt($("#A_m")[0].value)
       $("#A_sum")[0].value = MathExt.permutation(n, m)
     }
+    //ç»‘å®šcatalanæ•°è¾“å…¥æ¡†å†…å€¼å˜åŒ–äº‹ä»¶ï¼Œå½“nå˜åŒ–æ—¶æ›´æ–°h(n)çš„è¾“å‡ºå€¼
+    $(".hn_input").on("input propertychange", function () {
+      var n = parseInt($("#h_n")[0].value)
+      $("#h_sum")[0].value = MathExt.catalan_truth(n)
+    })
+    //ç»‘å®šå”®ç¥¨é—®é¢˜è¾“å…¥æ¡†å†…å€¼å˜åŒ–äº‹ä»¶
+    $(".hnm_practice_input").on("input propertychange", function () {
+      var n = parseInt($("#h_practice_n")[0].value)
+      var m = parseInt($("#h_practice_m")[0].value)
+      var result = calculator.multiply(MathExt.catalan(m), MathExt.factorial(m))
+      result = calculator.multiply(result, MathExt.factorial(m))
+      result = calculator.multiply(result, MathExt.permutation(n,n-m))
+      $("#h_practice_sum")[0].value = result
+    })
   })  
   return 
 })
