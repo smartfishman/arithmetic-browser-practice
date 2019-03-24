@@ -18,8 +18,20 @@ require.config({
 　　});
 require(["BinaryTree"], function (BinaryTree) {
   let array = [3,2,5,7,1,-5,4]
+  let binaryTreeTest = new BinaryTree(array)
+  console.log(binaryTreeTest)
   let binaryTree = new BinaryTree(array)
-  console.log(binaryTree)
-  binaryTree.addNode(3.5, binaryTree.rootNode)
+  binaryTree.addNode(5, binaryTree.rootNode)
+  binaryTree.addNode(-4, binaryTree.rootNode)
+  binaryTree.addNode(-6, binaryTree.rootNode)
+  binaryTree.addNode(2.5, binaryTree.rootNode)
+  binaryTree.addNode(2.25, binaryTree.rootNode)
+  binaryTree.addNode(2.6, binaryTree.rootNode)
+  console.log("二叉树顺序输出结构【中序遍历】：")
   console.log(binaryTree.inorderTraversal())
+  console.log("二叉树带缩进的目录输出结构【先序遍历】：")
+  console.log(binaryTree.perorderTraversal())
+  console.log("二叉树对所有节点求其与所有子节点值的和（计算文件夹里的文件大小？）【后序遍历】：")
+  binaryTree.postorderTraversal()
+  console.log(binaryTree)
 });
