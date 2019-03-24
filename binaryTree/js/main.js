@@ -14,9 +14,10 @@ require.config({
 			    //但在一个项目中不能混用这两种require方式，否则会导致module加载失败,原因不明，待证。
 			    //define(["Node"],function(Node){})也是同样情况。
 			    "BinaryTree":"binaryTree",
+			    "Queue":"queue",
 　　　　}
 　　});
-require(["BinaryTree"], function (BinaryTree) {
+require(["BinaryTree", "Queue"], function (BinaryTree, Queue) {
   let array = [3,2,5,7,1,-5,4]
   let binaryTreeTest = new BinaryTree(array)
   console.log(binaryTreeTest)
@@ -30,10 +31,22 @@ require(["BinaryTree"], function (BinaryTree) {
   console.log("二叉树顺序输出结构【中序遍历】：")
   console.log(binaryTree.inorderTraversal())
   console.log("二叉树带缩进的目录输出结构【先序遍历】：")
-  console.log(binaryTree.perorderTraversal())
+  console.log(binaryTree.preorderTraversal())
   console.log("二叉树对所有节点求其与所有子节点值的和（计算文件夹里的文件大小？）【后序遍历】：")
   binaryTree.postorderTraversal()
   console.log(binaryTree)
   console.log("二叉树中序遍历的morris算法实现【缩小了空间复杂度，增加了时间复杂度】")
   console.log(binaryTree.inorderTraversal_morris())
+  console.log("二叉树翻转，然后中序遍历输出")
+  binaryTree.invertBinaryTree()
+  console.log(binaryTree.inorderTraversal())
+  console.log("判断二叉树是否为完全二叉树:")
+  console.log(binaryTree.preorderTraversal())
+  console.log(binaryTree.isCompleteBinaryTree())
+  let array2 = [3, 2, 5, 1,2.5,]
+  let binaryTree_complete = new BinaryTree(array2)
+  console.log(binaryTree_complete.preorderTraversal())
+  console.log(binaryTree_complete.isCompleteBinaryTree())
+
+
 });

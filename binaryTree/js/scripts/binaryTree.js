@@ -13,14 +13,14 @@
 
   // AMD规范
   else if (typeof define === 'function' && define.amd) {
-    define([], factory);
+    define(["Queue"], factory);
   }
 
   // 浏览器实现
   else {
     root.paintObject = factory();
   }
-})(this, function () {
+})(this, function (Queue) {
 
   function BinaryTreeNode(obj) {
     this.obj = obj;
@@ -71,7 +71,7 @@
   }
 
   //先序遍历,打印出带缩进的二叉树结构
-  BinaryTree.prototype.perorderTraversal = function () {
+  BinaryTree.prototype.preorderTraversal = function () {
     if (!this.rootNode) {
       return null
     }
@@ -142,6 +142,59 @@
     }
     return arr
   }
+
+  //翻转二叉树
+  BinaryTree.prototype.invertBinaryTree = function () {
+    var rootNode = this.rootNode;
+    (function invert(rootNode) {
+      if (!rootNode) {
+        return null
+      }
+      var temp = rootNode.lChild
+      rootNode.lChild = rootNode.rChild
+      rootNode.rChild = temp
+      invert(rootNode.lChild)
+      invert(rootNode.rChild)
+    })(rootNode)
+  }
+  //判断二叉树是否为完全二叉树，根据以下两个性质得出结果：
+  //1、若右子树不为空，左子树为空，则一定不是二叉树。
+  //2、当按层次遍历节点时，若前面所有节点满足性质1，则当右子树为空时，此时的二叉树可暂时称为完全二叉树，
+  //若所有后面的节点都没有子节点,则为完全二叉树，否则不是。
+  //返回值为true时：时间复杂度 O(n) 空间复杂度O(w) w为二叉树宽度
+  BinaryTree.prototype.isCompleteBinaryTree = function () {    
+    if (!this.rootNode) {//空二叉树也是完全二叉树
+      return true
+    }
+    let queue = new Queue()
+    queue.push(this.rootNode)
+    let isComplete = false
+    while (queue.head) {
+      let curNode = queue.pop()
+      //判断当前节点是否满足性质1
+      if ((!curNode.lChild) && curNode.rChild) {
+        return false
+      }
+      //是否满足性质2
+      if (isComplete && (curNode.lChild || curNode.rChild)) {
+        return false
+      }
+      //若右子树为空，则后面所有节点不可再有子节点
+      if (!curNode.rChild) {
+        isComplete = true
+      }
+      //按层次推入新节点
+      if (curNode.lChild) {
+        queue.push(curNode.lChild)
+      }
+      if (curNode.rChild) {
+        queue.push(curNode.rChild)
+      }
+    }
+    return isComplete
+  }
+
+
 
   return BinaryTree
 })
