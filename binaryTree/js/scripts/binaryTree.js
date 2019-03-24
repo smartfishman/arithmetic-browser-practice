@@ -115,6 +115,33 @@
     })(this.rootNode)
     return result
   }
+  //morris算法实现中序遍历
+  //该算法利用时间换空间，达到了O(1)的空间复杂度，可用于运算空间不足的环境中。
+  //输出结果依然保留在数组arr中返回
+  BinaryTree.prototype.inorderTraversal_morris = function () {
+    var arr = []
+    var rootNode = this.rootNode
+    while (rootNode) {
+      if (!rootNode.lChild) {//左子树不存在，输出根节点，将新的访问节点转向当前根节点的右节点
+        arr[arr.length] = rootNode.obj
+        rootNode = rootNode.rChild
+      } else {//左子树存在，则找到左子树的最右子节点，将其右节点指针指向根节点
+        let temp = rootNode.lChild
+        while (temp.rChild && temp.rChild !== rootNode) {
+          temp = temp.rChild
+        }
+        if (!temp.rChild) {
+          temp.rChild = rootNode
+          rootNode = rootNode.lChild
+        } else {
+          arr[arr.length] = rootNode.obj
+          temp.rChild = null
+          rootNode = rootNode.rChild
+        }
+      }
+    }
+    return arr
+  }
 
   return BinaryTree
 })

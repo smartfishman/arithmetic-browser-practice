@@ -34,4 +34,6 @@ require(["BinaryTree"], function (BinaryTree) {
   console.log("二叉树对所有节点求其与所有子节点值的和（计算文件夹里的文件大小？）【后序遍历】：")
   binaryTree.postorderTraversal()
   console.log(binaryTree)
+  console.log("二叉树中序遍历的morris算法实现【缩小了空间复杂度，增加了时间复杂度】")
+  console.log(binaryTree.inorderTraversal_morris())
 });
