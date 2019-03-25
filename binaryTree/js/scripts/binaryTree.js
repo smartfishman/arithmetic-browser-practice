@@ -1,7 +1,7 @@
 ﻿/*
 作者：李青山
 日期：2019年3月23日
-功能概述：二叉排序树实现【左节点<根节点<右节点】
+功能概述：二叉排序树实现【左节点<根节点<=右节点】
 */
 "use strict";
 (function (root, factory) {
@@ -35,6 +35,101 @@
     }
   }
 
+  //获取二叉树高度,时间复杂度为O(n),空间复杂度O(height)
+  BinaryTree.prototype.getHeight = function (rootNode) {
+    if (!rootNode) {
+      return 0
+    }
+    return Math.max(this.getHeight(rootNode.lChild), this.getHeight(rootNode.rChild)) + 1
+  }
+
+  //对根节点右旋转，适用于左子树插入左节点的失衡情况
+  BinaryTree.prototype.balance_ll = function (rootNode, rootNode_parent) {
+    if (!rootNode || !rootNode.lChild) {
+      return
+    }
+    //判断父节点与根节点的关系
+    let flag = "";
+    if (!rootNode_parent) {
+      flag = "no_parent";
+    } else {
+      flag = (rootNode_parent.lChild === rootNode ? "lChild" : "rChild");
+    }
+    //右旋转
+    let newRootNode = rootNode.lChild;
+    rootNode.lChild = newRootNode.rChild;
+    newRootNode.rChild = rootNode;
+
+    if (flag === "no_parent") {//不存父节点，则该节点为该二叉树的根节点
+      this.rootNode = newRootNode;
+    } else {//若该根节点存在父节点，则将新子树赋值给父节点
+      rootNode_parent[flag] = newRootNode;
+    }
+  }
+
+  //对根节点左旋转，适用于右子树插入右节点的失衡情况
+  BinaryTree.prototype.balance_rr = function (rootNode, rootNode_parent) {
+    if (!rootNode || !rootNode.rChild) {
+      return
+    }
+    //判断父节点与根节点的关系
+    let flag = "";
+    if (!rootNode_parent) {
+      flag = "no_parent";
+    } else {
+      flag = (rootNode_parent.lChild === rootNode ? "lChild" : "rChild");
+    }
+    //左旋转
+    let newRootNode = rootNode.rChild;
+    rootNode.rChild = newRootNode.lChild;
+    newRootNode.lChild = rootNode;
+
+    if (flag === "no_parent") {//不存父节点，则该节点为该二叉树的根节点
+      this.rootNode = newRootNode;
+    } else {//若该根节点存在父节点，则将新子树赋值给父节点
+      rootNode_parent[flag] = newRootNode;
+    }
+  }
+
+  //对根节点的左子树左旋转，再对根节点右旋转，适用于左子树插入右节点的失衡情况
+  BinaryTree.prototype.balance_lr = function (rootNode, rootNode_parent) {
+    if (!rootNode) {
+      return
+    }
+    this.balance_rr(rootNode.lChild, rootNode);
+    this.balance_ll(rootNode, rootNode_parent);
+  }
+
+  //对根节点的右子树右旋转，再对根节点左旋转，适用于右子树插入左节点的失衡情况
+  BinaryTree.prototype.balance_rl = function (rootNode, rootNode_parent) {
+    if (!rootNode) {
+      return
+    }
+    this.balance_ll(rootNode.rChild, rootNode);
+    this.balance_rr(rootNode, rootNode_parent);
+  }
+
+  //遍历二叉树所有节点，将失衡的子树进行旋转。【后序遍历】
+  BinaryTree.prototype.balanceTree = function () {
+    (function recursion(rootNode, h) {
+      if (!rootNode) {
+        return h
+      }
+      h++;
+      //记录左右子树深度
+      let lChild_h = recursion(rootNode.lChild, h)
+      let rChild_h = recursion(rootNode.rChild, h)
+      //若左右子树深度相差大于1，则需进行旋转。
+      //此时分为四种情况:
+      //若右子树深度更深，且右子树的右子树深度更深，则用balance_rr。若右子树的左子树深度更深，则用balance_rl
+      //若左子树深度更深，且左子树的左子树深度更深，则用balance_ll。若左子树的右子树深度更深，则用balance_lr
+
+
+      return h
+    })(this.rootNode, 0)
+  }
+
+
   //为二叉树添加叶节点，因为js是值传递格式，所以需要返回节点数据用于父节点保存
   BinaryTree.prototype.addNode = function (obj, rootNode) {
     //若没有根节点，则说明已到达叶节点，创建新的节点数据并返回节点
@@ -49,6 +144,86 @@
       rootNode.rChild = this.addNode(obj, rootNode.rChild)
     }
     return rootNode
+  }
+
+  //为二叉树删除节点
+  //将被删除节点分为三种类型分别计算  
+  BinaryTree.prototype.removeNode = function (obj) {
+    //查找对应的节点及其父节点
+    let rootNode = this.rootNode;
+    let node_remove = null;
+    let node_parent = null;
+    //因为该二叉树实现允许存在相同值的节点，且按照始终向右扩展的规律保存，则在查找节点时需要始终只查找深度最深的一个。
+    (function findObj(rootNode) {
+      if (!rootNode) {
+        return
+      }
+      if (obj === rootNode.obj) {
+        node_remove = rootNode
+        //判断该节点是否还有相同值的节点在更深的右子树中 
+        if (rootNode.rChild) {
+          let node_mostLeft = rootNode.rChild
+          let node_mostLeft_parent = node_parent
+          while (node_mostLeft.lChild) {
+            node_mostLeft_parent = node_mostLeft
+            node_mostLeft = node_mostLeft.lChild
+          }
+          if (node_mostLeft.obj === node_remove.obj) { //当该根节点的右子树的最左子节点等于根节点的值时，则需继续查找
+            node_parent = node_mostLeft_parent
+            findObj(node_mostLeft)
+          }
+        }
+        return
+      }
+      node_parent = rootNode
+      if (obj < rootNode.obj) {
+        findObj(rootNode.lChild)
+      } else {
+        findObj(rootNode.rChild)
+      }
+    })(rootNode);
+    if (!node_remove) {
+      return false
+    }
+    //若待删除节点是叶节点，则直接删除
+    if (!node_remove.lChild && !node_remove.rChild) {
+      if (!node_parent) {//被删除的是根节点
+        this.rootNode = null
+      } else {
+        node_parent.lChild === node_remove ? (node_parent.lChild = null) : (node_parent.rChild = null)
+      }
+      return true
+    }
+    //若待删除节点有且只有一个子树，则将父节点指向子树的根节点
+    if (!(node_remove.lChild && node_remove.rChild)) {
+      let cur_node = node_remove.lChild || node_remove.rChild
+      if (!node_parent) {//被删除的是根节点
+        this.rootNode = cur_node
+      }
+      node_parent.lChild === node_remove ? node_parent.lChild = cur_node : node_parent.rChild = cur_node
+      return true
+    }
+    //若待删除节点有两个子树，则将右子树的最左节点值暂存，然后删除最左节点，然后将暂存值赋给待删除节点
+    //TODO 始终只删除右子树节点会导致二叉树失衡，是否可以轮换删除左右子树节点？
+    if (node_remove.lChild && node_remove.rChild) {
+      let node_mostLeft = node_remove.rChild
+      let node_mostLeft_parent = node_remove
+      //找到右子树的最左节点
+      while (node_mostLeft.lChild) {
+        node_mostLeft_parent = node_mostLeft
+        node_mostLeft = node_mostLeft.lChild
+      }
+      let obj_min = node_mostLeft.obj
+      //删除最左节点
+      if (node_mostLeft === node_remove.rChild) {//特殊情形，最左节点为右子树的根节点
+        node_mostLeft_parent.rChild = node_mostLeft.rChild
+      } else {
+        node_mostLeft_parent.lChild = node_mostLeft.rChild
+      }
+      //将最小值赋值给待删除节点
+      node_remove.obj = obj_min
+    }
+    return false
   }
 
   //为了实现二叉树的顺序输出，这里采用传统的中序遍历（时间复杂度O(n),空间复杂度O(h),n为节点数，h为二叉树高度）
@@ -162,7 +337,7 @@
   //2、当按层次遍历节点时，若前面所有节点满足性质1，则当右子树为空时，此时的二叉树可暂时称为完全二叉树，
   //若所有后面的节点都没有子节点,则为完全二叉树，否则不是。
   //返回值为true时：时间复杂度 O(n) 空间复杂度O(w) w为二叉树宽度
-  BinaryTree.prototype.isCompleteBinaryTree = function () {    
+  BinaryTree.prototype.isCompleteBinaryTree = function () {
     if (!this.rootNode) {//空二叉树也是完全二叉树
       return true
     }
@@ -193,6 +368,29 @@
     }
     return isComplete
   }
+
+  //将二叉树以树形结构输出[中序遍历]
+  BinaryTree.prototype.toStringTree = function () {
+    let rootNode = this.rootNode;
+    let result = "";
+    let h = 0;
+    (function inorderTraversal(rootNode) {
+      if (!rootNode) {
+        return
+      }
+      h++;
+      inorderTraversal(rootNode.rChild);
+      for (let i = 0; i < h; i++) {
+        result = result + "    ";
+      }
+      result = result + rootNode.obj + "\n";
+      inorderTraversal(rootNode.lChild);
+      h--;
+    })(rootNode);
+    return result;
+  }
+
+
 
 
 
