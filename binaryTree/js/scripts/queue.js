@@ -33,6 +33,9 @@
 
   //从尾部推入新元素
   Queue.prototype.push = function (obj) {
+    if (!obj) {
+      return false
+    }
     if (!this.head) {
       this.head = new Node(obj)
       this.head.next = this.tail
@@ -43,6 +46,7 @@
       newNode.next = this.tail
       this.tail.previous = newNode
     }
+    return true
   }
 
   //从头部提出元素
@@ -59,7 +63,6 @@
       return result
     }
   }
-
 
   return Queue
 })

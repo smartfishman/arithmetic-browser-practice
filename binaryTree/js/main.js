@@ -6,28 +6,44 @@
 "use strict"
 require.config({
 
-　　　　baseUrl: "js/scripts",
+  baseUrl: "js/scripts",
 
-　　　　paths: {
-			    //TODO:关于路径定义，只在一个地方调用时,比如"Node":"linklist/node"，在require调用中既可以
-			    //用require(["Node"],function(Node){}),也可以用require(["linklist/node"],function(Node){})。
-			    //但在一个项目中不能混用这两种require方式，否则会导致module加载失败,原因不明，待证。
-			    //define(["Node"],function(Node){})也是同样情况。
-			    "BinaryTree":"binaryTree",
-			    "Queue":"queue",
-　　　　}
-　　});
+  paths: {
+    //TODO:关于路径定义，只在一个地方调用时,比如"Node":"linklist/node"，在require调用中既可以
+    //用require(["Node"],function(Node){}),也可以用require(["linklist/node"],function(Node){})。
+    //但在一个项目中不能混用这两种require方式，否则会导致module加载失败,原因不明，待证。
+    //define(["Node"],function(Node){})也是同样情况。
+    "BinaryTree": "binaryTree",
+    "Queue": "queue",
+  }
+});
 require(["BinaryTree", "Queue"], function (BinaryTree, Queue) {
-  let array = [3,2,5,7,1,-5,4]
+  let array = [10, 9, 8, 7, 6, 2, 3, 4, 55, 5, 66, 67, - 1,]
+  //array = []
   let binaryTreeTest = new BinaryTree(array)
   console.log(binaryTreeTest)
   let binaryTree = new BinaryTree(array)
-  binaryTree.addNode(5, binaryTree.rootNode)
-  binaryTree.addNode(-4, binaryTree.rootNode)
-  binaryTree.addNode(-6, binaryTree.rootNode)
-  binaryTree.addNode(2.5, binaryTree.rootNode)
-  binaryTree.addNode(2.25, binaryTree.rootNode)
-  binaryTree.addNode(2.6, binaryTree.rootNode)
+  console.log(binaryTree.toStringTree())
+  console.log(binaryTree.getHeight(binaryTree.rootNode))
+  console.log(binaryTree.toStringTree())
+  console.log("平衡二叉树添加节点：")
+  binaryTree.addNode(65)
+  console.log(binaryTree.toStringTree())  
+  console.log("平衡二叉树删除节点:")
+  binaryTree.removeNode(-1)
+  console.log(binaryTree.toStringTree())
+  binaryTree.removeNode(2)
+  console.log(binaryTree.toStringTree())
+  binaryTree.removeNode(4)
+  console.log(binaryTree.toStringTree())
+  binaryTree.removeNode(3)
+  console.log(binaryTree.toStringTree())
+  binaryTree.removeNode(6)
+  console.log(binaryTree.toStringTree())
+  binaryTree.removeNode(7)
+  console.log(binaryTree.toStringTree())
+  
+  
   console.log("二叉树顺序输出结构【中序遍历】：")
   console.log(binaryTree.inorderTraversal())
   console.log("二叉树带缩进的目录输出结构【先序遍历】：")
@@ -43,7 +59,7 @@ require(["BinaryTree", "Queue"], function (BinaryTree, Queue) {
   console.log("判断二叉树是否为完全二叉树:")
   console.log(binaryTree.toStringTree())
   console.log(binaryTree.isCompleteBinaryTree())
-  let array2 = [3, 2, 5, 1,2.5,]
+  let array2 = [3, 2, 5, 1, 2.5,]
   let binaryTree_complete = new BinaryTree(array2)
   console.log(binaryTree_complete.toStringTree())
   console.log(binaryTree_complete.isCompleteBinaryTree())
@@ -74,6 +90,7 @@ require(["BinaryTree", "Queue"], function (BinaryTree, Queue) {
   console.log("双旋转")
   binaryTree.balance_rl(binaryTree.rootNode)
   console.log(binaryTree.toStringTree())
+
 
 
 });
